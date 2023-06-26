@@ -54,9 +54,9 @@ export default function Table({
         <tbody>
           <>
             {!data.length && (
-              <Tr>
+              <tr>
                 <Td colSpan={columns.length}>No Data Available</Td>
-              </Tr>
+              </tr>
             )}
 
             {!!data.length &&
