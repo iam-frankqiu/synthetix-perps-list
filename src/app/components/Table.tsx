@@ -1,48 +1,75 @@
 import React from "react";
+import styled from "styled-components";
 
 type columnType = {
   title: string;
   key: string;
-  width: string;
 };
 
 type dataType = {
-  _id: number;
   [key: string]: any;
 };
 
 type TableProps = {
   data: dataType[];
   columns: columnType[];
+  rowKey: keyof dataType;
 };
+
+const DataTable = styled.table`
+  color: #ffffff;
+  width: 414px;
+`;
+
+const Tr = styled.tr`
+  background: #212121;
+  padding: 13px 0;
+  display: flex;
+  justify-content: space-around;
+  font-size: 10px;
+  font-weight: 400;
+`;
+
+const Td = styled.td`
+  text-align: center;
+  height: 45px;
+  background: #1a1a1a;
+`;
+
 export default function Table({
   data,
   columns,
+  rowKey,
 }: TableProps): React.ReactElement {
   return (
     <>
-      <table>
+      <DataTable>
+        <thead>
+          <Tr>
+            {columns.map((item) => (
+              <th key={item.key}>{item.title}</th>
+            ))}
+          </Tr>
+        </thead>
         <tbody>
           <>
             {!data.length && (
-              <tr>
-                <td colSpan={columns.length}>No Data Available</td>
-              </tr>
+              <Tr>
+                <Td colSpan={columns.length}>No Data Available</Td>
+              </Tr>
             )}
 
             {!!data.length &&
               data.map((item) => (
-                <tr key={item._id}>
+                <Tr key={item[rowKey]}>
                   {columns.map((column) => (
-                    <td key={column.key} style={{ width: column.width }}>
-                      {item[column.key]}
-                    </td>
+                    <Td key={column.key}>{item[column.key]}</Td>
                   ))}
-                </tr>
+                </Tr>
               ))}
           </>
         </tbody>
-      </table>
+      </DataTable>
     </>
   );
 }
