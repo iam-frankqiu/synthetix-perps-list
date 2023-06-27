@@ -21,13 +21,13 @@ const Container = styled.div`
 `;
 
 export default function Home() {
-  const markets = useMarkets();
+  const {data: markets, isLoading} = useMarkets();
 
   return (
     <main className={styles.main}>
       <Container>
         <H1>Synthetix Perps Markets</H1>
-        <Table data={markets} columns={COLUMNS}></Table>
+        <Table data={markets} columns={COLUMNS} isLoading={isLoading}></Table>
       </Container>
     </main>
   );

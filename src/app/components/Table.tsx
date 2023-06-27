@@ -14,6 +14,7 @@ type dataType = {
 type TableProps = {
   data: dataType[];
   columns: columnType[];
+  isLoading: boolean,
 };
 
 const DataTable = styled.table`
@@ -66,6 +67,7 @@ const BodyTr = styled.tr`
 export default function Table({
   data,
   columns,
+  isLoading
 }: TableProps): React.ReactElement {
   return (
     <>
@@ -81,7 +83,7 @@ export default function Table({
           <>
             {!data.length && (
               <BodyTr>
-                <EmptyTd colSpan={columns.length}>No Data Available</EmptyTd>
+                <EmptyTd colSpan={columns.length}>{isLoading ? 'Loading...': 'No Data Available'}</EmptyTd>
               </BodyTr>
             )}
 

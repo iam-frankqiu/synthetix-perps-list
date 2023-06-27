@@ -9,7 +9,11 @@ import {
 } from "../utils";
 
 export const useMarkets = () => {
-  const [markets, setMarkets] = useState([]);
+  const [state, setState] = useState({
+    data: [],
+    isLoading: true,
+    error: null,
+  });
 
   useEffect(() => {
     const loadMarkets = async () => {
@@ -19,8 +23,8 @@ export const useMarkets = () => {
       async function fetchData() {
         try {
           const result = await contract.allMarketSummaries(); // Replace with the actual function you want to call
-          setMarkets(
-            result
+          setState({
+            data: result
               .map((item) => {
                 const { asset, marketSize, price, feeRates } = item;
                 const { takerFee, makerFee } = feeRates;
@@ -34,9 +38,12 @@ export const useMarkets = () => {
                   marketSizeNumber: formatNumber(marketSize),
                 };
               })
-              .sort((a, b) => b.marketSizeNumber - a.marketSizeNumber)
-          );
+              .sort((a, b) => b.marketSizeNumber - a.marketSizeNumber),
+            isLoading: false,
+            error: null,
+          });
         } catch (error) {
+          setState({ data: [], isLoading: false, error });
           console.error("Error fetching contract data:", error);
         }
       }
@@ -46,5 +53,5 @@ export const useMarkets = () => {
     loadMarkets();
   }, []);
 
-  return markets;
+  return state;
 };
