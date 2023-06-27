@@ -1,5 +1,6 @@
 import React from "react";
 import styled from "styled-components";
+import { generatePrimaryKey } from "../utils";
 
 type columnType = {
   title: string;
@@ -21,19 +22,42 @@ const DataTable = styled.table`
   width: 414px;
 `;
 
-const Tr = styled.tr`
+const HeadTr = styled.tr`
   background: #212121;
-  padding: 13px 0;
+  padding: 13px 20px;
   display: flex;
   justify-content: space-around;
   font-size: 10px;
   font-weight: 400;
 `;
 
-const Td = styled.td`
+const Th = styled.th`
+  flex: 1;
+  text-align: left;
+`;
+
+const EmptyTd = styled.td`
   text-align: center;
   height: 45px;
-  background: #1a1a1a;
+  line-height: 45px;
+`;
+
+const Td = styled.td`
+  text-align: left;
+  height: 45px;
+  line-height: 45px;
+  flex: 1;
+`;
+//   background: #1a1a1a;
+
+const BodyTr = styled.tr`
+  background: #212121;
+  display: flex;
+  padding: 0 20px;
+  justify-content: space-around;
+  align-items: center;
+  font-size: 10px;
+  font-weight: 400;
 `;
 
 export default function Table({
@@ -45,27 +69,27 @@ export default function Table({
     <>
       <DataTable>
         <thead>
-          <Tr>
+          <HeadTr>
             {columns.map((item) => (
-              <th key={item.key}>{item.title}</th>
+              <Th key={item.key}>{item.title}</Th>
             ))}
-          </Tr>
+          </HeadTr>
         </thead>
         <tbody>
           <>
             {!data.length && (
-              <tr>
-                <Td colSpan={columns.length}>No Data Available</Td>
-              </tr>
+              <BodyTr>
+                <EmptyTd colSpan={columns.length}>No Data Available</EmptyTd>
+              </BodyTr>
             )}
 
             {!!data.length &&
               data.map((item) => (
-                <Tr key={item[rowKey]}>
+                <BodyTr key={generatePrimaryKey(item)}>
                   {columns.map((column) => (
                     <Td key={column.key}>{item[column.key]}</Td>
                   ))}
-                </Tr>
+                </BodyTr>
               ))}
           </>
         </tbody>

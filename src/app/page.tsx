@@ -1,12 +1,17 @@
 "use client";
 
 import styles from "./page.module.css";
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState } from "react";
 import { ethers } from "ethers";
 import styled from "styled-components";
-import { ABI, CONTRACT_ADDRESS, EIP20ABI, NETWORK } from "./constants";
+import { ABI, CONTRACT_ADDRESS, NETWORK } from "./constants";
 import Table from "./components/Table";
-import BigNumber from "bignumber.js";
+import {
+  getCoinName,
+  formatNumberToUsd,
+  formatNumber,
+  formatString,
+} from "./utils";
 
 const H1 = styled.h1`
   font-weight: 700;
@@ -35,40 +40,8 @@ const columns = [
   },
 ];
 
-const tokenABI = [
-  {
-    constant: true,
-    inputs: [],
-    name: "name",
-    outputs: [
-      {
-        name: "",
-        type: "string",
-      },
-    ],
-    payable: false,
-    stateMutability: "view",
-    type: "function",
-  },
-];
-
-const getCoinName = async (provider, address) => {
-  try {
-    const contract = new ethers.Contract(address, tokenABI, provider);
-    console.log(contract);
-    const name = contract.name();
-    return name;
-  } catch (error) {
-    console.log(error);
-    return "";
-  }
-};
-
 export default function Home() {
   const [markets, setMarkets] = useState([]);
-  // const [provider, setProvider] = useState(() =>
-  //   ethers.getDefaultProvider(NETWORK)
-  // );
 
   useEffect(() => {
     const loadMarkets = async () => {
@@ -78,32 +51,22 @@ export default function Home() {
       async function fetchData() {
         try {
           const result = await contract.allMarketSummaries(); // Replace with the actual function you want to call
-          // const data = await Promise.all(
-          //   result.slice(0, 1).map(async (item) => {
-          //     let { market, asset } = item;
-          //     const name = await getCoinName(provider, market);
-          //     console.log(name, market);
-          //     return { marketName: `${name}-perp`, asset };
-          //   })
-          // );
-          console.log("Contract data:", result);
-          // result.sort((a, b) => {
-          //   return a.marketSize - b.marketSize;
-          // });
-          // const sortedResult = result.toSorted(
-          //   (a, b) => a.marketSize - b.marketSize
-          // );
           setMarkets(
-            result.map((item) => {
-              const { market, marketSize, price, feeRates } = item;
-              const { takerFee, makerFee } = feeRates;
-              return {
-                market,
-                marketSize: `$${new BigNumber(marketSize).toFormat(2)}`,
-                price: `$${new BigNumber(price).toFormat(2)}`,
-                markerTakerRatio: `${takerFee} / ${makerFee}`,
-              };
-            })
+            result
+              .map((item) => {
+                const { asset, marketSize, price, feeRates } = item;
+                const { takerFee, makerFee } = feeRates;
+                return {
+                  marketName: getCoinName(asset),
+                  marketSize: formatNumberToUsd(marketSize),
+                  price: formatNumberToUsd(price),
+                  markerTakerRatio: `${formatString(
+                    takerFee
+                  )}% / ${formatString(makerFee)}%`,
+                  marketSizeNumber: formatNumber(marketSize),
+                };
+              })
+              .sort((a, b) => b.marketSizeNumber - a.marketSizeNumber)
           );
         } catch (error) {
           console.error("Error fetching contract data:", error);
@@ -114,19 +77,6 @@ export default function Home() {
 
     loadMarkets();
   }, []);
-
-  // const tableData = useMemo(() => {
-  //   return markets.map(async (item) => {
-  //     const { market, asset } = item;
-  //     try {
-  //       const name = await provider.resolveName(market);
-  //       return { name, asset };
-  //     } catch (error) {
-  //       console.error("Error retrieving name:", error);
-  //       return { name: "", asset };
-  //     }
-  //   });
-  // }, [markets, provider]);
 
   return (
     <main className={styles.main}>
