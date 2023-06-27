@@ -34,7 +34,7 @@ export const getCoinName = (asset: string) => {
 };
 
 export const generatePrimaryKey = <T extends Object>(item: T) => {
-  return Object.keys(item).reduce((prev, current) => {
-    return prev.toString() + String(item[current]);
+  return Object.keys(item).reduce((prev: string, current: string) => {
+    return prev.toString() + String(item[current as keyof T]);
   }, "");
 };

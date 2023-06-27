@@ -2,19 +2,23 @@ import React from "react";
 import styled from "styled-components";
 import { generatePrimaryKey } from "../utils";
 
-type columnType = {
+type columnType<T> = {
   title: string;
-  key: string;
+  key: keyof T;
 };
 
-type dataType = {
-  [key: string]: any;
+type TableProps<T extends Object> = {
+  data: T[];
+  columns: columnType<T>[];
+  isLoading: boolean;
 };
 
-type TableProps = {
-  data: dataType[];
-  columns: columnType[];
-  isLoading: boolean,
+type TdProps = {
+  isFirst: boolean;
+};
+
+type TrProps = {
+  isEven: boolean;
 };
 
 const DataTable = styled.table`
@@ -43,7 +47,7 @@ const EmptyTd = styled.td`
   font-size: 12px;
 `;
 
-const Td = styled.td`
+const Td = styled.td<TdProps>`
   text-align: left;
   height: 45px;
   line-height: 45px;
@@ -52,9 +56,8 @@ const Td = styled.td`
   color: ${(props) => (props.isFirst ? "#FFFFFF" : "#CACACA")};
   font-size: 12px;
 `;
-//   background: #1a1a1a;
 
-const BodyTr = styled.tr`
+const BodyTr = styled.tr<TrProps>`
   background: ${(props) => (props.isEven ? "#212121" : "#1A1A1A")};
   display: flex;
   padding: 0 20px;
@@ -64,26 +67,28 @@ const BodyTr = styled.tr`
   font-weight: 400;
 `;
 
-export default function Table({
+export default function Table<T extends Object>({
   data,
   columns,
-  isLoading
-}: TableProps): React.ReactElement {
+  isLoading,
+}: TableProps<T>): React.ReactElement {
   return (
     <>
       <DataTable>
         <thead>
           <HeadTr>
             {columns.map((item) => (
-              <Th key={item.key}>{item.title}</Th>
+              <Th key={String(item.key)}>{item.title}</Th>
             ))}
           </HeadTr>
         </thead>
         <tbody>
           <>
             {!data.length && (
-              <BodyTr>
-                <EmptyTd colSpan={columns.length}>{isLoading ? 'Loading...': 'No Data Available'}</EmptyTd>
+              <BodyTr isEven={false}>
+                <EmptyTd colSpan={columns.length}>
+                  {isLoading ? "Loading..." : "No Data Available"}
+                </EmptyTd>
               </BodyTr>
             )}
 
@@ -94,8 +99,8 @@ export default function Table({
                   isEven={dataIndex % 2 === 0}
                 >
                   {columns.map((column, index) => (
-                    <Td key={column.key} isFirst={index === 0}>
-                      {item[column.key]}
+                    <Td key={String(column.key)} isFirst={index === 0}>
+                      {String(item[column.key])}
                     </Td>
                   ))}
                 </BodyTr>

@@ -12,17 +12,16 @@ export const useMarkets = () => {
   const [state, setState] = useState({
     data: [],
     isLoading: true,
-    error: null,
   });
 
   useEffect(() => {
     const loadMarkets = async () => {
-      const provider = ethers.getDefaultProvider(NETWORK); // Use your provider here
+      const provider = ethers.getDefaultProvider(NETWORK);
       const contract = new ethers.Contract(CONTRACT_ADDRESS, ABI, provider);
 
       async function fetchData() {
         try {
-          const result = await contract.allMarketSummaries(); // Replace with the actual function you want to call
+          const result = await contract.allMarketSummaries();
           setState({
             data: result
               .map((item) => {
@@ -35,15 +34,15 @@ export const useMarkets = () => {
                   markerTakerRatio: `${formatString(
                     takerFee
                   )}% / ${formatString(makerFee)}%`,
+                  // It's defined for sorting.
                   marketSizeNumber: formatNumber(marketSize),
                 };
               })
               .sort((a, b) => b.marketSizeNumber - a.marketSizeNumber),
             isLoading: false,
-            error: null,
           });
         } catch (error) {
-          setState({ data: [], isLoading: false, error });
+          setState({ data: [], isLoading: false });
           console.error("Error fetching contract data:", error);
         }
       }
