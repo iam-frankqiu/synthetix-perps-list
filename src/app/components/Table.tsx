@@ -14,7 +14,6 @@ type dataType = {
 type TableProps = {
   data: dataType[];
   columns: columnType[];
-  rowKey: keyof dataType;
 };
 
 const DataTable = styled.table`
@@ -63,7 +62,6 @@ const BodyTr = styled.tr`
 export default function Table({
   data,
   columns,
-  rowKey,
 }: TableProps): React.ReactElement {
   return (
     <>

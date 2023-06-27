@@ -16,3 +16,16 @@ export const ABI = [
   "function positionDetailsForMarketKey(bytes32 marketKey, address account) view returns (tuple(tuple(uint64 id, uint64 lastFundingIndex, uint128 margin, uint128 lastPrice, int128 size) position, int256 notionalValue, int256 profitLoss, int256 accruedFunding, uint256 remainingMargin, uint256 accessibleMargin, uint256 liquidationPrice, bool canLiquidatePosition))",
   "function resolverProxy() view returns (address)",
 ];
+
+export const COLUMNS = [
+    { key: "marketName", title: "MARKET" },
+    { key: "price", title: "PRICE" },
+    {
+      key: "marketSize",
+      title: "MARKET SIZE",
+    },
+    {
+      key: "markerTakerRatio",
+      title: "MAKER/TAKER",
+    },
+  ]
