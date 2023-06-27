@@ -39,6 +39,7 @@ const EmptyTd = styled.td`
   text-align: center;
   height: 45px;
   line-height: 45px;
+  font-size: 12px;
 `;
 
 const Td = styled.td`
@@ -46,11 +47,14 @@ const Td = styled.td`
   height: 45px;
   line-height: 45px;
   flex: 1;
+  font-weight: ${(props) => (props.isFirst ? 700 : 400)};
+  color: ${(props) => (props.isFirst ? "#FFFFFF" : "#CACACA")};
+  font-size: 12px;
 `;
 //   background: #1a1a1a;
 
 const BodyTr = styled.tr`
-  background: #212121;
+  background: ${(props) => (props.isEven ? "#212121" : "#1A1A1A")};
   display: flex;
   padding: 0 20px;
   justify-content: space-around;
@@ -82,10 +86,15 @@ export default function Table({
             )}
 
             {!!data.length &&
-              data.map((item) => (
-                <BodyTr key={generatePrimaryKey(item)}>
-                  {columns.map((column) => (
-                    <Td key={column.key}>{item[column.key]}</Td>
+              data.map((item, dataIndex) => (
+                <BodyTr
+                  key={generatePrimaryKey(item)}
+                  isEven={dataIndex % 2 === 0}
+                >
+                  {columns.map((column, index) => (
+                    <Td key={column.key} isFirst={index === 0}>
+                      {item[column.key]}
+                    </Td>
                   ))}
                 </BodyTr>
               ))}

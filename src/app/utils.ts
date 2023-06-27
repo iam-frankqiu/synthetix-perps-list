@@ -2,11 +2,21 @@ import { ethers } from "ethers";
 import BigNumber from "bignumber.js";
 
 export const formatNumber = (num) => {
-  return new BigNumber(ethers.formatEther(num)).toNumber();
+  try {
+    return new BigNumber(ethers.formatEther(num)).toNumber();
+  } catch (error) {
+    console.log(error);
+  }
+  return num;
 };
 
 export const formatString = (num) => {
-  return new BigNumber(ethers.formatEther(num)).toFormat(2);
+  try {
+    return new BigNumber(ethers.formatEther(num)).toFormat(2);
+  } catch (error) {
+    console.log(error);
+  }
+  return num;
 };
 
 export const formatNumberToUsd = (val) => {
@@ -19,8 +29,8 @@ export const getCoinName = (asset: string) => {
     return `${marketName.toUpperCase()}-PERP`;
   } catch (error) {
     console.log(error);
-    return "";
   }
+  return asset;
 };
 
 export const generatePrimaryKey = <T extends Object>(item: T) => {
